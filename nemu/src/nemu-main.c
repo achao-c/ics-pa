@@ -10,11 +10,13 @@ int main(int argc, char *argv[]) {
 #ifdef CONFIG_TARGET_AM
   am_init_monitor();
 #else
+  // 装载简易程序
   init_monitor(argc, argv);
 #endif
 
   /* Start engine. */
+  // 启动调试器
   engine_start();
 
-  return is_exit_status_bad();
+  return !is_exit_status_bad();
 }
