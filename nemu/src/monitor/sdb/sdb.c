@@ -3,6 +3,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <stdlib.h>
+#include <stdio.h>
+word_t vaddr_read(vaddr_t addr, int len);
 
 static int is_batch_mode = false;
 
@@ -32,6 +35,38 @@ static int cmd_c(char *args) {
   return 0;
 }
 
+static int cmd_si(char *args) {
+  if (args == NULL) cpu_exec(1);
+  else {
+    int num = atoi(args);
+    cpu_exec(num);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if (*args == 'r') {
+    isa_reg_display();
+  }
+  return 0;
+}
+
+static int cmd_show_mem(char *args) {
+  char *arg1 = strtok(args, " ");  // 仿照第一个参数获取方法，获取空格前的字符串，即中间的参数
+  char *arg2 = arg1 + strlen(arg1) + 1;  // 最后一个参数
+  arg2 += 2; // 把0x去掉
+  int num = atoi(arg1);
+  vaddr_t addr;
+  sscanf(arg2, "%x", &addr);   // 这个函数很有用，可以将字符串转换成不同进制的数字
+
+  printf("the begin addr is 0x%08x\n", addr);
+  for (int i = 0; i < num; ++i) {
+    printf("addr: 0x%08x;    value: 0x%08x\n", addr, vaddr_read(addr+i*4, 4));
+    addr += 4;
+  }
+  
+  return 0;
+}
 
 static int cmd_q(char *args) {
   return -1;
@@ -47,7 +82,9 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
+  { "si", "Continue n steps", cmd_si },
+  { "info", "Show reg and watcher's info", cmd_info},
+  { "x", "Show the memory", cmd_show_mem },
   /* TODO: Add more commands */
 
 };
