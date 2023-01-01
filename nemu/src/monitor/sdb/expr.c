@@ -43,7 +43,7 @@ static struct rule
     {"==", TK_EQ},              // equal
     {"!=", TK_NEQ},             // not equal
     {"&&", TK_AND},             // and
-    {"\\$[\\$a-z][0-9]+", REG}, // and
+    {"\\$[\\$a-z][a-z0-9]+", REG}, // and
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -162,8 +162,8 @@ static bool make_token(char *e)
         case REG:
           assert(substr_len <= 31); // 否则就要发生缓冲区溢出
           tokens[nr_token].type = REG;
-          strncpy(tokens[nr_token].str, substr_start, substr_len); // 拷贝字符串进入数组中
-          tokens[nr_token].str[substr_len] = '\0';
+          strncpy(tokens[nr_token].str, substr_start+1, substr_len-1); // 拷贝字符串进入数组中
+          tokens[nr_token].str[substr_len-1] = '\0';
           ++nr_token;
         default:
           TODO();
