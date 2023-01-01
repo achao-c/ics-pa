@@ -6,7 +6,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, NUM, HEX 
+  TK_NOTYPE = 256, TK_EQ, NUM, HEX, TK_NEQ
 
   /* TODO: Add more token types */
 
@@ -31,6 +31,7 @@ static struct rule {
   {"\\(", '('},         // (
   {"\\)", ')'},         // )
   {"==", TK_EQ},        // equal
+  {"!=", TK_NEQ},        // not equal
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -162,17 +163,19 @@ bool check_parentheses(size_t p, size_t q) {
   return flag;
 }
 
-/* 暂时没用上
+
 static struct op_prio {
   const char op;
   int prio;
 } op_priority[] = {
   {'+', 1},    
   {'-', 1},
-  {'*', 1},
-  {'/', 1},
+  {'*', 2},
+  {'/', 2},
+  {TK_EQ, 0},
+  {TK_NEQ, 0},
 };
-*/
+
 
 size_t find_main_op(size_t p, size_t q) {
   bool findmain = false;
@@ -189,8 +192,14 @@ size_t find_main_op(size_t p, size_t q) {
         findmain = true;
         re_idx = idx;
       }
-      else if (tokens[idx].type == '+' || tokens[idx].type == '-') re_idx = idx;
-      else if (tokens[re_idx].type == '*' || tokens[re_idx].type == '/') re_idx = idx;
+      else {
+        int mainprio = 0, nowprio = 0;
+        for (int i = 0; i < 6; ++i) {
+          if (tokens[re_idx].type == op_priority[i].op) mainprio = op_priority[i].prio;
+          if (tokens[idx].type == op_priority[i].op) nowprio = op_priority[i].prio;
+        }
+        if (nowprio <= mainprio) re_idx = idx;
+      }
     }
   }
   return re_idx;
