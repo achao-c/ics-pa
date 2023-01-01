@@ -165,7 +165,7 @@ bool check_parentheses(size_t p, size_t q) {
 
 
 static struct op_prio {
-  const char op;
+  const int op;
   int prio;
 } op_priority[] = {
   {'+', 1},    
