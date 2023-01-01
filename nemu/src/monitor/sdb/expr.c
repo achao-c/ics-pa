@@ -6,7 +6,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, TK_EQ, NUM, HEX 
 
   /* TODO: Add more token types */
 
@@ -23,6 +23,13 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
+  {"-", '-'},           // substract
+  {"\\*", '*'},         // mul
+  {"/", '/'},           // div
+  {"[1-9]+", NUM},      // number
+  {"0x[1-9a-f]+", HEX}, // hex
+  {"\\(", '('},         // (
+  {"\\)", ')'},         // )
   {"==", TK_EQ},        // equal
 };
 
@@ -55,6 +62,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+// 
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -80,6 +88,46 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
+          case TK_NOTYPE:
+            break;
+          case '+':
+            tokens[nr_token++].type = '+';
+            break;
+          case '-':
+            tokens[nr_token++].type = '-';
+            break;
+          case '*':
+            tokens[nr_token++].type = '*';
+            break;
+          case '/':
+            tokens[nr_token++].type = '/';
+            break;
+          case '(':
+            tokens[nr_token++].type = '(';
+            break;  
+          case ')':
+            tokens[nr_token++].type = ')';
+            break;
+          case NUM:   // 将字符放入解析数组中
+            assert(substr_len <= 31);   // 否则就要发生缓冲区溢出
+            tokens[nr_token].type = NUM;
+            strncpy(tokens[nr_token].str, substr_start, substr_len); // 拷贝字符串进入数组中
+            tokens[nr_token].str[substr_len] = '\0';
+            ++nr_token;
+            break;
+          case HEX:   // 将字符放入解析数组中
+            assert(substr_len <= 31);   // 否则就要发生缓冲区溢出
+            tokens[nr_token].type = NUM;
+            char num[32]; // 将16进制字符取出放入其中，方便转换为10进制
+            strncpy(num, substr_start+2, substr_len-2); // 拷贝字符串进入数组中
+            num[substr_len-2] = '\0';
+            unsigned int true_num = 0;
+            sscanf(num, "%x", &true_num);   // 这个函数很有用，可以将不同进制的字符串转换成数字
+            sprintf(num, "%d", true_num);
+            strncpy(tokens[nr_token].str, num, 32);
+            tokens[nr_token].str[strlen(num)] = '\0';
+            ++nr_token;
+            break;
           default: TODO();
         }
 
@@ -96,6 +144,86 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(size_t p, size_t q) {
+  // 检查最外层是否为括号
+  bool flag = true;
+  if (tokens[p].type != '(' || tokens[q].type != ')') flag = false;
+  int sum = 0;
+  for (size_t idx = p; idx <= q; ++idx) {
+    if (tokens[idx].type != '(' && tokens[idx].type != ')') continue;
+    if (tokens[idx].type == '(') ++sum;
+    else --sum;
+    //Log("%d\n ", sum);
+    // 1.若sum小于0，一定不合法
+    assert(sum >= 0);
+    // 2.只有sum为0时位置刚好为q最外层才为括号
+    if (sum == 0 && (idx != q)) flag = false; 
+  }
+  return flag;
+}
+
+/* 暂时没用上
+static struct op_prio {
+  const char op;
+  int prio;
+} op_priority[] = {
+  {'+', 1},    
+  {'-', 1},
+  {'*', 1},
+  {'/', 1},
+};
+*/
+
+size_t find_main_op(size_t p, size_t q) {
+  bool findmain = false;
+  size_t re_idx = 0;
+  // 找出表达式的主运算符
+  for (size_t idx = p; idx <= q; ++idx) {
+    if (tokens[idx].type == NUM) continue;
+    if (tokens[idx].type == '(') {
+      while (idx <= q && tokens[idx].type != ')') ++idx;
+    }
+    // 上面逻辑使得遇到)跳过，所以不会出现)
+    else {
+      if (!findmain) {
+        findmain = true;
+        re_idx = idx;
+      }
+      else if (tokens[idx].type == '+' || tokens[idx].type == '-') re_idx = idx;
+      else if (tokens[re_idx].type == '*' || tokens[re_idx].type == '/') re_idx = idx;
+    }
+  }
+  return re_idx;
+}
+
+u_int32_t eval(size_t p, size_t q) {
+  //Log("%zu  %zu", p, q);
+  if (p > q) assert(0);
+  // 2.现阶段情况只有可能是数字
+  else if (p == q) {
+    u_int32_t only_num;
+    sscanf(tokens[p].str, "%d", &only_num);
+    return only_num;
+  }  
+  // 3.最外面有层括号，将括号拿去
+  else if (check_parentheses(p, q)) {
+    return eval(p+1, q-1);
+  }
+  // 4.找到主运算符
+  else {
+    size_t idx = find_main_op(p, q); 
+    u_int32_t left_val = eval(p, idx-1);
+    u_int32_t right_val = eval(idx+1, q);
+
+    switch (tokens[idx].type) {
+      case '+': return left_val + right_val;
+      case '-': return left_val - right_val;
+      case '*': return left_val * right_val;
+      case '/': return left_val / right_val;
+    }
+  }
+  return 0;
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -104,7 +232,7 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  return eval(0, nr_token-1);
 
-  return 0;
+
 }
