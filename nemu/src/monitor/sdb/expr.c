@@ -103,6 +103,12 @@ static bool make_token(char *e) {
           case '/':
             tokens[nr_token++].type = '/';
             break;
+          case TK_EQ:
+            tokens[nr_token++].type = TK_EQ;
+            break;
+          case TK_NEQ:
+            tokens[nr_token++].type = TK_NEQ;
+            break;  
           case '(':
             tokens[nr_token++].type = '(';
             break;  
@@ -163,7 +169,7 @@ bool check_parentheses(size_t p, size_t q) {
   return flag;
 }
 
-
+// priority num 
 static struct op_prio {
   const int op;
   int prio;
@@ -229,6 +235,8 @@ u_int32_t eval(size_t p, size_t q) {
       case '-': return left_val - right_val;
       case '*': return left_val * right_val;
       case '/': return left_val / right_val;
+      case TK_EQ: {if (left_val == 0 && right_val == 0) return 1; else if (left_val == 0 || right_val == 0) return 0; return 1;}
+      case TK_NEQ: {if (left_val == 0 && right_val == 0) return 0; else if (left_val == 0 || right_val == 0) return 1; return 0;}
     }
   }
   return 0;
