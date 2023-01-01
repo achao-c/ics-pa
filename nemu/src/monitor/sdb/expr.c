@@ -6,7 +6,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, NUM, HEX, TK_NEQ, TK_AND
+  TK_NOTYPE = 256, TK_EQ, NUM, HEX, TK_NEQ, TK_AND, REG, TK_NEG, TK_DEPOINT
 
   /* TODO: Add more token types */
 
@@ -33,7 +33,7 @@ static struct rule {
   {"==", TK_EQ},        // equal
   {"!=", TK_NEQ},        // not equal
   {"&&", TK_AND},        // and
-  {"\\$[\\$a-z][0-9]+", TK_AND},        // and
+  {"\\$[\\$a-z][0-9]+", REG},        // and
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -140,6 +140,12 @@ static bool make_token(char *e) {
             tokens[nr_token].str[strlen(num)] = '\0';
             ++nr_token;
             break;
+          case REG:
+            assert(substr_len <= 31);   // 否则就要发生缓冲区溢出
+            tokens[nr_token].type = REG;
+            strncpy(tokens[nr_token].str, substr_start, substr_len); // 拷贝字符串进入数组中
+            tokens[nr_token].str[substr_len] = '\0';
+            ++nr_token;
           default: TODO();
         }
 
@@ -194,7 +200,7 @@ size_t find_main_op(size_t p, size_t q) {
   size_t re_idx = 0;
   // 找出表达式的主运算符
   for (size_t idx = p; idx <= q; ++idx) {
-    if (tokens[idx].type == NUM) continue;
+    if (tokens[idx].type == NUM || tokens[idx].type == REG) continue;
     if (tokens[idx].type == '(') {
       while (idx <= q && tokens[idx].type != ')') ++idx;
     }
@@ -205,7 +211,7 @@ size_t find_main_op(size_t p, size_t q) {
         re_idx = idx;
       }
       else {
-        int mainprio = 0, nowprio = 0;
+        int mainprio = 0, nowprio = 0; 
         for (int i = 0; i < 6; ++i) {
           if (tokens[re_idx].type == op_priority[i].op) mainprio = op_priority[i].prio;
           if (tokens[idx].type == op_priority[i].op) nowprio = op_priority[i].prio;
@@ -223,7 +229,14 @@ u_int32_t eval(size_t p, size_t q) {
   // 2.现阶段情况只有可能是数字
   else if (p == q) {
     u_int32_t only_num;
-    sscanf(tokens[p].str, "%d", &only_num);
+    if (tokens[p].type == REG) {
+      bool t = true;
+      only_num = isa_reg_str2val(tokens[p].str, &t);
+    }
+    else {
+      sscanf(tokens[p].str, "%d", &only_num);
+
+    }
     return only_num;
   }  
   // 3.最外面有层括号，将括号拿去
@@ -232,8 +245,11 @@ u_int32_t eval(size_t p, size_t q) {
   }
   // 4.找到主运算符
   else {
-    size_t idx = find_main_op(p, q); 
-    u_int32_t left_val = eval(p, idx-1);
+    size_t idx = find_main_op(p, q);
+
+    u_int32_t left_val = 0;
+    if (tokens[idx].type != TK_NEG && tokens[idx].type != TK_DEPOINT) 
+      left_val = eval(p, idx-1);
     u_int32_t right_val = eval(idx+1, q);
 
     switch (tokens[idx].type) {
@@ -244,7 +260,8 @@ u_int32_t eval(size_t p, size_t q) {
       case TK_EQ: {if (left_val == 0 && right_val == 0) return 1; else if (left_val == 0 || right_val == 0) return 0; return 1;}
       case TK_NEQ: {if (left_val == 0 && right_val == 0) return 0; else if (left_val == 0 || right_val == 0) return 1; return 0;}
       case TK_AND: {if (left_val == 0 || right_val == 0) return 0; return 1;}
-
+      case TK_NEG: return -right_val;
+      case TK_DEPOINT: return vaddr_read(right_val, 4);
     }
   }
   return 0;
@@ -257,6 +274,14 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+  for (int i = 0; i < nr_token; i++) {
+    if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type !=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REG && tokens[i-1].type!=')'))) {
+      tokens[i].type = TK_NEG;
+    }
+    if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type !=NUM && tokens[i-1].type!=HEX && tokens[i-1].type!=REG && tokens[i-1].type!=')'))) {
+      tokens[i].type = TK_DEPOINT;
+    }
+  }
   return eval(0, nr_token-1);
 
 
