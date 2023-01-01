@@ -272,7 +272,7 @@ u_int32_t eval(size_t p, size_t q)
   // 2.现阶段情况只有可能是数字 and reg
   else if (p == q)
   {
-    u_int32_t only_num = 1;
+    u_int32_t only_num;
     if (tokens[p].type == REG)
     {
       bool t = true;
