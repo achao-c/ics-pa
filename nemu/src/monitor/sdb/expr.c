@@ -334,6 +334,7 @@ u_int32_t eval(size_t p, size_t q)
     case TK_NEG:
       return -right_val;
     case TK_DEPOINT:
+      word_t vaddr_read(vaddr_t addr, int len);
       return vaddr_read(right_val, 4);
     }
   }
