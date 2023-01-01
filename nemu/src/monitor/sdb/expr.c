@@ -226,7 +226,7 @@ size_t find_main_op(size_t p, size_t q) {
 u_int32_t eval(size_t p, size_t q) {
   //Log("%zu  %zu", p, q);
   if (p > q) assert(0);
-  // 2.现阶段情况只有可能是数字
+  // 2.现阶段情况只有可能是数字 and reg
   else if (p == q) {
     u_int32_t only_num;
     if (tokens[p].type == REG) {
@@ -261,7 +261,7 @@ u_int32_t eval(size_t p, size_t q) {
       case TK_NEQ: {if (left_val == 0 && right_val == 0) return 0; else if (left_val == 0 || right_val == 0) return 1; return 0;}
       case TK_AND: {if (left_val == 0 || right_val == 0) return 0; return 1;}
       case TK_NEG: return -right_val;
-      case TK_DEPOINT: return vaddr_read(right_val, 4);
+      case TK_DEPOINT: return 0;//vaddr_read(right_val, 4);
     }
   }
   return 0;
