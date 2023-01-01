@@ -4,7 +4,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-u_int32_t vaddr_read(vaddr_t addr, int len);
+u_int32_t vaddr_read(vaddr_t addr, int len);  // declaration
 
 enum
 {
