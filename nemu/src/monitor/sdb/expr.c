@@ -6,7 +6,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ, NUM, HEX, TK_NEQ
+  TK_NOTYPE = 256, TK_EQ, NUM, HEX, TK_NEQ, TK_AND
 
   /* TODO: Add more token types */
 
@@ -32,6 +32,7 @@ static struct rule {
   {"\\)", ')'},         // )
   {"==", TK_EQ},        // equal
   {"!=", TK_NEQ},        // not equal
+  {"&&", TK_AND},        // and
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -109,6 +110,9 @@ static bool make_token(char *e) {
           case TK_NEQ:
             tokens[nr_token++].type = TK_NEQ;
             break;  
+          case TK_AND:
+            tokens[nr_token++].type = TK_AND;
+            break;
           case '(':
             tokens[nr_token++].type = '(';
             break;  
@@ -180,6 +184,7 @@ static struct op_prio {
   {'/', 2},
   {TK_EQ, 0},
   {TK_NEQ, 0},
+  {TK_AND, -1},
 };
 
 
@@ -237,6 +242,8 @@ u_int32_t eval(size_t p, size_t q) {
       case '/': return left_val / right_val;
       case TK_EQ: {if (left_val == 0 && right_val == 0) return 1; else if (left_val == 0 || right_val == 0) return 0; return 1;}
       case TK_NEQ: {if (left_val == 0 && right_val == 0) return 0; else if (left_val == 0 || right_val == 0) return 1; return 0;}
+      case TK_AND: {if (left_val == 0 || right_val == 0) return 0; return 1;}
+
     }
   }
   return 0;
