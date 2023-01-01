@@ -26,8 +26,8 @@ static struct rule {
   {"-", '-'},           // substract
   {"\\*", '*'},         // mul
   {"/", '/'},           // div
-  {"[0-9]+", NUM},      // number
   {"0[xX][0-9a-f]+", HEX}, // hex
+  {"[0-9]+", NUM},      // number
   {"\\(", '('},         // (
   {"\\)", ')'},         // )
   {"==", TK_EQ},        // equal
