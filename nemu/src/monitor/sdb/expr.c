@@ -247,7 +247,7 @@ size_t find_main_op(size_t p, size_t q)
       }
       else
       {
-        int mainprio = 0, nowprio = 0;
+        int mainprio = 100, nowprio = 0;
         for (int i = 0; i < 6; ++i)
         {
           if (tokens[re_idx].type == op_priority[i].op)
