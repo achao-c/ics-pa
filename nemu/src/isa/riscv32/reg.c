@@ -22,6 +22,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   for (int idx = 0; idx < 32; ++idx) {
     if (!strcmp(reg_name(idx, 0), s)) return cpu.gpr[idx]._32;
   }
+  if (!strcmp("pc", s)) return cpu.pc;
   *success = false;
   return 0;
 }
