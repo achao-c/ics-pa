@@ -334,7 +334,7 @@ u_int32_t eval(size_t p, size_t q)
     case TK_NEG:
       return -right_val;
     case TK_DEPOINT:
-      return 0; // vaddr_read(right_val, 4);
+      return vaddr_read(right_val, 4);
     }
   }
   return 0;
