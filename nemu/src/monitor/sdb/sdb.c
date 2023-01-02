@@ -6,6 +6,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 word_t vaddr_read(vaddr_t addr, int len);
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+
+  /* TODO: Add more members if necessary */
+  char str[32];
+  u_int32_t value;
+
+} WP;
 
 static int is_batch_mode = false;
 
