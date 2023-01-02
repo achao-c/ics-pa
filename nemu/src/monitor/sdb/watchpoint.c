@@ -56,7 +56,6 @@ bool if_change() {
   WP* wp = head;
   bool tmp = true;
   bool *success = &tmp;
-  word_t res = expr(wp->str, success);
   while (wp) {
     u_int32_t newvalue = expr(wp->str, success);
     if (newvalue == wp->value) {;}
