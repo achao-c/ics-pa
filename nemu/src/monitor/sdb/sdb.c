@@ -15,6 +15,8 @@ typedef struct watchpoint {
   u_int32_t value;
 
 } WP;
+WP* new_wp();
+
 
 static int is_batch_mode = false;
 
