@@ -38,8 +38,8 @@ WP* new_wp() {
 }
 
 void free_wp(u_int32_t idx) {
-  //WP dum;
-  WP* dummyhead = NULL;//&dum;
+  WP dum;
+  WP* dummyhead = &dum;
   dummyhead->next = head;
   while (dummyhead->next) {
     if (dummyhead->next->NO != idx) dummyhead = dummyhead->next;
@@ -52,7 +52,7 @@ void free_wp(u_int32_t idx) {
       break;
     }
   }
-  //head = dum.next;  // 必须加上，要不头部不一定去哪了
+  head = dum.next;  // 必须加上，要不头部不一定去哪了
 }
 
 bool if_change() {
