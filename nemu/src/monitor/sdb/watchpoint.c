@@ -52,6 +52,7 @@ void free_wp(u_int32_t idx) {
       break;
     }
   }
+  head = dum.next;
 }
 
 bool if_change() {
