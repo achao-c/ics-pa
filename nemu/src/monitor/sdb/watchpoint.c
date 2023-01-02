@@ -73,9 +73,9 @@ bool if_change() {
 
 void show_watchpoint() {
   WP* wp = head;
-  if (!wp) printf("watchpoint is None."); 
+  if (!wp) printf("watchpoint is None.\n"); 
   while (wp) {
-    printf("watchpoint %d:%s's value is %d.", wp->NO, wp->str, wp->value);
+    printf("watchpoint %d:%s's value is %d.\n", wp->NO, wp->str, wp->value);
     wp = wp->next;
   }
 }
