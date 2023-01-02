@@ -13,7 +13,8 @@ typedef struct watchpoint {
   u_int32_t value;
 } WP;
 WP* new_wp(); // 函数声明
-void show_watchpoint();
+void show_watchpoint(); // 函数声明
+void free_wp(u_int32_t idx); // 函数声明
 
 static int is_batch_mode = false;
 
@@ -101,6 +102,13 @@ static int cmd_watchpoint(char *args) {
   return 0;
 }
 
+static int cmd_delwatchpoint(char *args) {
+  u_int32_t idx;
+  sscanf(args, "%d", &idx);
+  free_wp(idx);
+  return 0;
+}
+
 static int cmd_q(char *args) {
   return -1;
 }
@@ -120,6 +128,7 @@ static struct {
   { "x", "Show the memory", cmd_show_mem },
   { "p", "Calculate the expression", cmd_cal_exp },
   { "w", "Set the watchpoint", cmd_watchpoint },
+  { "d", "Del the watchpoint", cmd_delwatchpoint },
   /* TODO: Add more commands */
 
 };

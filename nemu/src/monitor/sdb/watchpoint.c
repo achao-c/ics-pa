@@ -37,15 +37,17 @@ WP* new_wp() {
   return head;
 }
 
-void free_wp(WP *wp) {
+void free_wp(u_int32_t idx) {
   WP* dummyhead = NULL;
   dummyhead->next = head;
   while (dummyhead->next) {
-    if (dummyhead->next != wp) dummyhead = dummyhead->next;
+    if (dummyhead->next->NO != idx) dummyhead = dummyhead->next;
     else {
+      WP* wp = dummyhead->next;
       dummyhead->next = dummyhead->next->next;
       wp->next = free_;
       free_ = wp;
+      printf("watchpoint %d:%s is delated.\n", wp->NO, wp->str); 
       break;
     }
   }
