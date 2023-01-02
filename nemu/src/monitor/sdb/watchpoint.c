@@ -38,7 +38,8 @@ WP* new_wp() {
 }
 
 void free_wp(u_int32_t idx) {
-  WP* dummyhead = NULL;
+  WP dum;
+  WP* dummyhead = &dum;
   dummyhead->next = head;
   while (dummyhead->next) {
     if (dummyhead->next->NO != idx) dummyhead = dummyhead->next;
