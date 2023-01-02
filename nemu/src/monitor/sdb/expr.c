@@ -312,11 +312,7 @@ u_int32_t eval(size_t p, size_t q)
       return left_val / right_val;
     case TK_EQ:
     {
-      if (left_val == 0 && right_val == 0)
-        return 1;
-      else if (left_val == 0 || right_val == 0)
-        return 0;
-      return 1;
+      return left_val == right_val;
     }
     case TK_NEQ:
     {
