@@ -89,7 +89,7 @@ static int cmd_cal_exp(char *args) {
 
 static int cmd_watchpoint(char *args) {
   WP* newWP = new_wp();
-  newWP->str = args;
+  strcpy(newWP->str, args);
 
   bool tmp = true;
   bool *success = &tmp;
