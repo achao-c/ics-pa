@@ -5,18 +5,15 @@
 #include "sdb.h"
 #include <stdlib.h>
 #include <stdio.h>
-word_t vaddr_read(vaddr_t addr, int len);
+word_t vaddr_read(vaddr_t addr, int len);  // 函数声明
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
   char str[32];
   u_int32_t value;
-
 } WP;
-WP* new_wp();
-
+WP* new_wp(); // 函数声明
+void show_watchpoint();
 
 static int is_batch_mode = false;
 
@@ -58,6 +55,9 @@ static int cmd_si(char *args) {
 static int cmd_info(char *args) {
   if (*args == 'r') {
     isa_reg_display();
+  }
+  if (*args == 'w') {
+    show_watchpoint();
   }
   return 0;
 }

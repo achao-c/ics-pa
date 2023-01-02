@@ -60,13 +60,22 @@ bool if_change() {
     u_int32_t newvalue = expr(wp->str, success);
     if (newvalue == wp->value) {;}
     else {
-			printf("watchpoint %d:%s is changed\n", wp->NO, wp->str);
-			printf("The old value is %d\n", wp->value);
-			printf("The new value is %d\n", newvalue);
+			printf("watchpoint %d:%s is changed.\n", wp->NO, wp->str);
+			printf("The old value is %d.\n", wp->value);
+			printf("The new value is %d.\n", newvalue);
 			wp->value = newvalue;
       re = true;
     }
     wp = wp->next;
   }
   return re;
+}
+
+void show_watchpoint() {
+  WP* wp = head;
+  if (!wp) printf("watchpoint is None."); 
+  while (wp) {
+    printf("watchpoint %d:%s's value is %d.", wp->NO, wp->str, wp->value);
+    wp = wp->next;
+  }
 }
