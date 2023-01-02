@@ -61,7 +61,7 @@ bool if_change() {
     u_int32_t newvalue = expr(wp->str, success);
     if (newvalue == wp->value) {;}
     else {
-			printf("watchpoint %d:%s is changed\n", wp->NO, wp->exp);
+			printf("watchpoint %d:%s is changed\n", wp->NO, wp->str);
 			printf("The old value is %d\n", wp->value);
 			printf("The new value is %d\n", newvalue);
 			wp->value = newvalue;
