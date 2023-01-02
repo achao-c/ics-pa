@@ -52,7 +52,7 @@ void free_wp(u_int32_t idx) {
       break;
     }
   }
-  head = dum.next;
+  head = dum.next;  // 必须加上，要不头部不一定去哪了
 }
 
 bool if_change() {
