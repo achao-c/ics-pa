@@ -71,9 +71,22 @@ static int cmd_show_mem(char *args) {
 static int cmd_cal_exp(char *args) {
   bool tmp = true;
   bool *success = &tmp;
-  *success = true;
   word_t res = expr(args, success);
   if (*success) printf("the cal's result is %d\n", res);
+  return 0;
+}
+
+static int cmd_watchpoint(char *args) {
+  WP* newWP = new_wp();
+  newWP->str = args;
+
+  bool tmp = true;
+  bool *success = &tmp;
+  word_t res = expr(args, success);
+  if (*success) {
+    printf("the initial result is %d\n", res);
+    newWP->value = res;
+  }
   return 0;
 }
 
@@ -95,6 +108,7 @@ static struct {
   { "info", "Show reg and watcher's info", cmd_info},
   { "x", "Show the memory", cmd_show_mem },
   { "p", "Calculate the expression", cmd_cal_exp },
+  { "w", "Set the watchpoint", cmd_watchpoint },
   /* TODO: Add more commands */
 
 };

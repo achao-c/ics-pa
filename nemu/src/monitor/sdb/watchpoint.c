@@ -7,6 +7,8 @@ typedef struct watchpoint {
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
+  char str[32];
+  u_int32_t value;
 
 } WP;
 
@@ -26,3 +28,46 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
+WP* new_wp() {
+  assert(free_);
+  WP* useWP = free_;
+  free_ = free_->next;
+  useWP->next = head;
+  head = useWP;
+  return head;
+}
+
+void free_wp(WP *wp) {
+  WP* dummyhead = NULL;
+  dummyhead->next = head;
+  while (dummyhead->next) {
+    if (dummyhead->next != wp) dummyhead = dummyhead->next;
+    else {
+      dummyhead->next = dummyhead->next->next;
+      wp->next = free_;
+      free_ = wp;
+      break;
+    }
+  }
+}
+
+bool if_change() {
+  bool re = false;
+  WP* wp = head;
+  bool tmp = true;
+  bool *success = &tmp;
+  word_t res = expr(wp->str, success);
+  while (wp) {
+    u_int32_t newvalue = expr(wp->str, success);
+    if (newvalue == wp->value) {;}
+    else {
+			printf("watchpoint %d:%s is changed\n", wp->NO, wp->exp);
+			printf("The old value is %d\n", wp->value);
+			printf("The new value is %d\n", newvalue);
+			wp->value = newvalue;
+      re = true;
+    }
+    wp = wp->next;
+  }
+  return re;
+}
