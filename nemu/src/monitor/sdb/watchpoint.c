@@ -65,8 +65,8 @@ bool if_change() {
     if (newvalue == wp->value) {;}
     else {
 			printf("watchpoint %d:%s is changed.\n", wp->NO, wp->str);
-			printf("The old value is %d.\n", wp->value);
-			printf("The new value is %d.\n", newvalue);
+			printf("The old value is %d(0x%x).\n", wp->value, wp->value);
+			printf("The new value is %d(0x%x).\n", newvalue, newvalue);
 			wp->value = newvalue;
       re = true;
       return re;
