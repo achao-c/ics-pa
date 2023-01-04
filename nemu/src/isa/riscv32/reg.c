@@ -24,6 +24,6 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   }
   if (!strcmp("pc", s)) return cpu.pc;
   *success = false;
-  assert(0); // not find
+  panic("Wrong reg name."); // Wrong reg name.
   return 0;
 }
