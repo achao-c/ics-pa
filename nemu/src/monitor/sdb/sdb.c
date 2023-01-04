@@ -84,7 +84,7 @@ static int cmd_cal_exp(char *args) {
   bool tmp = true;
   bool *success = &tmp;
   word_t res = expr(args, success);
-  if (*success) printf("the cal's result is %d\n", res);
+  if (*success) printf("the cal's result is %d(0x%x)\n", res, res);
   return 0;
 }
 
