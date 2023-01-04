@@ -40,9 +40,9 @@ static const void* g_exec_table[TOTAL_INSTR] = {
 };
 
 static void fetch_decode_exec_updatepc(Decode *s) {
-  fetch_decode(s, cpu.pc);
-  s->EHelper(s);
-  cpu.pc = s->dnpc;
+  fetch_decode(s, cpu.pc);  // 进行取指和译码
+  s->EHelper(s);  // 来模拟指令执行的真正操作
+  cpu.pc = s->dnpc; 
 }
 
 static void statistic() {
@@ -62,7 +62,7 @@ void assert_fail_msg() {
 void fetch_decode(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
-  int idx = isa_fetch_decode(s);
+  int idx = isa_fetch_decode(s); // 它会随着取指的过程修改s->snpc的值, 使得从isa_fetch_decode()返回后s->snpc正好为下一条指令的PC
   s->dnpc = s->snpc;
   s->EHelper = g_exec_table[idx];
 #ifdef CONFIG_ITRACE
