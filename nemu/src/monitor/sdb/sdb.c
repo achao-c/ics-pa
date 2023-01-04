@@ -96,7 +96,7 @@ static int cmd_watchpoint(char *args) {
   bool *success = &tmp;
   word_t res = expr(args, success);
   if (*success) {
-    printf("the initial result is %d\n", res);
+    printf("the initial result is %d(0x%x).\n", res, res);
     newWP->value = res;
   }
   return 0;
