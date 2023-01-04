@@ -203,7 +203,7 @@ bool check_parentheses(size_t p, size_t q)
     // Log("%d\n ", sum);
     //  1.若sum小于0，一定不合法
     assert(sum >= 0);
-    // 2.只有sum为0时位置刚好为q最外层才为括号
+    // 2.只有sum为0时位置刚好为q最外层才为括号 ()()不行
     if (sum == 0 && (idx != q))
       flag = false;
   }
@@ -270,7 +270,7 @@ u_int32_t eval(size_t p, size_t q)
   // Log("%zu  %zu", p, q);
   if (p > q)
     assert(0);
-  // 2.现阶段情况只有可能是数字 and reg
+  // 2.现阶段情况只有可能是数字和寄存器
   else if (p == q)
   {
     u_int32_t only_num;

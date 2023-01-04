@@ -69,6 +69,7 @@ bool if_change() {
 			printf("The new value is %d.\n", newvalue);
 			wp->value = newvalue;
       re = true;
+      return re;
     }
     wp = wp->next;
   }
