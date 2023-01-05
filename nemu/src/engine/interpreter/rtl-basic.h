@@ -21,8 +21,8 @@
   def_rtl_compute_imm(name) \
 
 // compute
-
-def_rtl_compute_reg_imm(add)
+// 宏展开真是666 这里是rtl_addi
+def_rtl_compute_reg_imm(add)  
 def_rtl_compute_reg_imm(sub)
 def_rtl_compute_reg_imm(and)
 def_rtl_compute_reg_imm(or)
