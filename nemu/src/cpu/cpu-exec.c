@@ -34,11 +34,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 #include <isa-exec.h>
 
+//------------------ 4 -----------------
 #define FILL_EXEC_TABLE(name) [concat(EXEC_ID_, name)] = concat(exec_, name),
 static const void* g_exec_table[TOTAL_INSTR] = {
   MAP(INSTR_LIST, FILL_EXEC_TABLE)
 };
 
+//------------------ 0 -----------------
 static void fetch_decode_exec_updatepc(Decode *s) {
   fetch_decode(s, cpu.pc);  // 进行取指和译码
   s->EHelper(s);  // 来模拟指令执行的真正操作
@@ -58,13 +60,13 @@ void assert_fail_msg() {
   isa_reg_display();
   statistic();
 }
-
+//------------------ 1 -----------------
 void fetch_decode(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   int idx = isa_fetch_decode(s); // 它会随着取指的过程修改s->snpc的值, 使得从isa_fetch_decode()返回后s->snpc正好为下一条指令的PC
   s->dnpc = s->snpc;
-  s->EHelper = g_exec_table[idx];
+  s->EHelper = g_exec_table[idx];  
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);

@@ -9,6 +9,7 @@
 
 static inline def_rtl(li, rtlreg_t* dest, const rtlreg_t imm) {
   rtl_addi(s, dest, rz, imm);
+  panic();
 }
 
 static inline def_rtl(mv, rtlreg_t* dest, const rtlreg_t *src1) {
