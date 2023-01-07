@@ -16,7 +16,7 @@ def_EHelper(jal) {
   //word_t* next_isr = &(cpu.pc+4);
   rtl_addi(s, ddest, rz, cpu.pc+4);
   int32_t a = cpu.pc + id_src1->imm;
-  printf("0x%x", a);
+  printf("hahaha0x%x\n", a);
   rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->imm);
 
 }
