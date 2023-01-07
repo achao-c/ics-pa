@@ -18,6 +18,8 @@ def_EHelper(jal) {
   int32_t a = cpu.pc + id_src1->imm;
   printf("hahaha0x%x\n", a);
   rtl_addi(s, &cpu.pc, rz, a);
+  printf("ha0x%x\n", cpu.pc);
+
 
 }
 
