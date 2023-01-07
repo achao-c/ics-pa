@@ -23,4 +23,5 @@ def_EHelper(jalr) {
   rtl_addi(s, &cpu.pc, dsrc1, id_src2->imm);
   cpu.pc = cpu.pc & (~1);
   rtl_addi(s, ddest, rz, t);
+  panic("gogogo");
 }
