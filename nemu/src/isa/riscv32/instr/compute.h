@@ -4,12 +4,12 @@ def_EHelper(lui) {
 }
 
 def_EHelper(addi) {
-  rtl_addi(s, ddest, dsrc1, id_src2->imm);
+  rtl_addi(s, ddest, dsrc1, id_src2->simm);
 }
 
 
 def_EHelper(auipc) {
-  rtl_addi(s, ddest, &cpu.pc, id_src1->imm);
+  rtl_addi(s, ddest, &cpu.pc, id_src1->simm);
 }
 
 def_EHelper(jal) {
@@ -17,13 +17,13 @@ def_EHelper(jal) {
   rtl_addi(s, ddest, rz, cpu.pc+4);
   int32_t a = cpu.pc + id_src1->imm;
   printf("hahaha0x%x\n", a);
-  rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->imm);
+  rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->simm);
 
 }
 
 def_EHelper(jalr) {
   word_t t = cpu.pc+4;
-  rtl_addi(s, &cpu.pc, dsrc1, id_src2->imm);
+  rtl_addi(s, &cpu.pc, dsrc1, id_src2->simm);
   cpu.pc = cpu.pc & (~1);
   rtl_addi(s, ddest, rz, t);
 }
