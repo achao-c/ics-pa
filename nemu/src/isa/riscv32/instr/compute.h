@@ -17,7 +17,7 @@ def_EHelper(jal) {
   rtl_addi(s, ddest, rz, cpu.pc+4);
   int32_t a = cpu.pc + id_src1->imm;
   printf("hahaha0x%x\n", a);
-  rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->simm);
+  rtl_addi(s, &cpu.pc, rz, a);
 
 }
 
