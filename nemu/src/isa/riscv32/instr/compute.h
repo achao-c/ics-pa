@@ -17,3 +17,10 @@ def_EHelper(jal) {
   rtl_addi(s, ddest, rz, cpu.pc+4);
   rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->imm);
 }
+
+def_EHelper(jalr) {
+  word_t t = cpu.pc+4;
+  rtl_addi(s, &cpu.pc, dsrc1, id_src2->imm);
+  cpu.pc = cpu.pc & (~1);
+  rtl_addi(s, ddest, rz, t);
+}
