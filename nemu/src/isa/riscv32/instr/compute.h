@@ -16,6 +16,8 @@ def_EHelper(jal) {
   //word_t* next_isr = &(cpu.pc+4);
   rtl_addi(s, ddest, rz, cpu.pc+4);
   rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->imm);
+  panic("gogogo1");
+
 }
 
 def_EHelper(jalr) {
