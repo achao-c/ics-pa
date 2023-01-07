@@ -11,3 +11,9 @@ def_EHelper(addi) {
 def_EHelper(auipc) {
   rtl_addi(s, ddest, &cpu.pc, id_src1->imm);
 }
+
+def_EHelper(jal) {
+  //word_t* next_isr = &(cpu.pc+4);
+  rtl_addi(s, ddest, rz, cpu.pc+4);
+  rtl_addi(s, &cpu.pc, &cpu.pc, id_src1->imm);
+}
