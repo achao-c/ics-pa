@@ -20,8 +20,6 @@ def_EHelper(jal) {
 }
 
 def_EHelper(jalr) {
-    panic("gogogo");
-
   word_t t = cpu.pc+4;
   rtl_addi(s, &cpu.pc, dsrc1, id_src2->imm);
   cpu.pc = cpu.pc & (~1);
