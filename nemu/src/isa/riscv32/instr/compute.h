@@ -23,8 +23,8 @@ def_EHelper(jal) {
 }
 
 def_EHelper(jalr) {
-  word_t t = cpu.pc+4;
-  rtl_addi(s, &cpu.pc, dsrc1, id_src2->simm);
-  cpu.pc = cpu.pc & (~1);
+  word_t t = s->pc+4;
+  rtl_addi(s, &(s->dnpc), dsrc1, id_src2->simm);
+  s->dnpc = s->dnpc & (~1);
   rtl_addi(s, ddest, rz, t);
 }
