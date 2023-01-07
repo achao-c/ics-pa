@@ -14,11 +14,10 @@ def_EHelper(auipc) {
 
 def_EHelper(jal) {
   //word_t* next_isr = &(cpu.pc+4);
-  rtl_addi(s, ddest, rz, cpu.pc+4);
-  int32_t a = cpu.pc + id_src1->imm;
-  printf("hahaha0x%x\n", a);
-  rtl_addi(s, &cpu.pc, rz, a);
-  printf("ha0x%x\n", cpu.pc);
+  rtl_addi(s, ddest, rz, s->pc+4);
+  int32_t a = s->pc + id_src1->imm;
+  rtl_addi(s, &(s->dnpc), rz, a);
+  printf("ha0x%x\n", s->dnpc);
 
 
 }
