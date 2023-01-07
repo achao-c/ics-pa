@@ -41,7 +41,7 @@ def_rtl(hostcall, uint32_t id, rtlreg_t *dest, const rtlreg_t *src1,
   switch (id) {
     case HOSTCALL_EXIT:
       difftest_skip_ref();
-      panic("aaaaa");
+      printf("%d", *src1);
       set_nemu_state(NEMU_END, s->pc, *src1);
       break;
     case HOSTCALL_INV: invalid_instr(s->pc); break;
