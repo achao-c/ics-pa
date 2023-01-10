@@ -26,3 +26,34 @@ def_EHelper(jalr) {
   s->dnpc = s->dnpc & (~1);
   rtl_addi(s, ddest, rz, t);
 }
+
+def_EHelper(add) {
+  rtl_add(s, ddest, dsrc1, dsrc2);
+}
+
+def_EHelper(sub) {
+  rtl_sub(s, ddest, dsrc1, dsrc2);
+}
+
+def_EHelper(sltiu) {
+  if (id_src2->imm > (*dsrc1)) {
+    rtl_addi(s, ddest, rz, 1);
+  }
+  else {
+    rtl_addi(s, ddest, rz, 0);
+  }
+}
+
+def_EHelper(beq) {
+  if ((*dsrc1) == (*dsrc2)) {
+    rtl_addi(s, &(s->dnpc), &(s->pc), id_dest->simm);
+  }
+
+}
+
+def_EHelper(bne) {
+  if ((*dsrc1) != (*dsrc2)) {
+    rtl_addi(s, &(s->dnpc), &(s->pc), id_dest->simm);
+  }
+}
+

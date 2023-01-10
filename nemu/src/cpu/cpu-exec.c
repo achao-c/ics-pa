@@ -44,7 +44,7 @@ static const void* g_exec_table[TOTAL_INSTR] = {
 static void fetch_decode_exec_updatepc(Decode *s) {
   fetch_decode(s, cpu.pc);  // 进行取指和译码
   s->EHelper(s);  // 来模拟指令执行的真正操作
-  cpu.pc = s->dnpc; 
+  cpu.pc = s->dnpc; // 更新pc
 }
 
 static void statistic() {
@@ -90,6 +90,7 @@ void fetch_decode(Decode *s, vaddr_t pc) {
 }
 
 /* Simulate how the CPU works. */
+//------------------ (-1) -----------------
 void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INSTR_TO_PRINT);
   switch (nemu_state.state) {
